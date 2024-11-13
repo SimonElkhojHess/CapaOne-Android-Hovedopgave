@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">CapaOne Android Hovedopgave</string>
+    <string name="app_name">CapaOne Android Agent</string>
+    <string name="device_name_label">Device name: </string>
+    <string name="device_osversion_label">OS version: </string>
+    <string name="device_model_label">Model: </string>
 </resources>
