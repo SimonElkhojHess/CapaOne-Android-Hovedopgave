@@ -5,28 +5,73 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_slate"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/android_green"
+        android:orientation="horizontal"
+        android:outlineProvider="bounds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/androidlogo"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/app_name" />
+
+        <TextView
+            android:id="@+id/app_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/dark_slate"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/top_bar_border"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customborder"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar"
+        > </LinearLayout>
 
     <LinearLayout
         android:id="@+id/device_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:background="@drawable/topinfoborder"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/top_bar_border">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:text="@string/device_name_label"
+            android:textColor="@color/dark_slate"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -36,6 +81,7 @@
             android:gravity="end"
             android:orientation="horizontal"
             android:text="*name of device here*"
+            android:textColor="@color/dark_slate"
             android:textSize="18sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -48,6 +94,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
+        android:background="@drawable/middleinfoborder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/device_name">
@@ -57,15 +104,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:text="@string/device_osversion_label"
+            android:textColor="@color/dark_slate"
             android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="end"
+            android:orientation="horizontal"
             android:text="*OS Version Here*"
+            android:textColor="@color/dark_slate"
             android:textSize="18sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -78,28 +127,29 @@
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
+        android:background="@drawable/bottominfoborder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/os_version">
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:text="@string/device_model_label"
+            android:textColor="@color/dark_slate"
             android:textSize="22sp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="end"
+            android:orientation="horizontal"
             android:text="*device model here*"
+            android:textColor="@color/dark_slate"
             android:textSize="18sp"
-            tools:ignore="HardcodedText"
-            />
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

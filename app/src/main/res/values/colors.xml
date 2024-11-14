@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_slate">#F1F5F9</color>
+    <color name="dark_slate">#1E293B</color>
+    <color name="light_sky">#E0F2FE</color>
+    <color name="standard_blue">#60A5FA</color>
+    <color name="android_green">#F6F9EB</color>
 </resources>
