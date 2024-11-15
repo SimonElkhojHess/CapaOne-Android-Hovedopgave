@@ -1,6 +1,7 @@
 package com.example.capaoneandroidhovedopgave;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.TextView;
@@ -28,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         TextView osVersionField = findViewById(R.id.os_version_field);
         String osVersion = android.os.Build.VERSION.RELEASE;
         osVersionField.setText(osVersion);
+
+        // Getting and filling the device model field for the display info.
+        TextView deviceModelField = findViewById(R.id.device_model_field);
+        String deviceModel = Build.MODEL;
+        deviceModelField.setText(deviceModel);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
