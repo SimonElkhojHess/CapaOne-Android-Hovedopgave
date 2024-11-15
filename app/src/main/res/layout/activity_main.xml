@@ -76,14 +76,14 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/device_name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:text=""
             android:orientation="horizontal"
-            android:text="*name of device here*"
             android:textColor="@color/dark_slate"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
