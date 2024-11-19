@@ -1,7 +1,11 @@
 package com.example.capaoneandroidhovedopgave.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
         TextView deviceNameField = findViewById(R.id.device_name_field);
         String deviceName = currentDevice.getDeviceName();
         deviceNameField.setText(deviceName);
+
+        boolean successfulNameChange = currentDevice.setDeviceName("new Device Name");
+        if (successfulNameChange) {
+            Toast.makeText(this, "Device name updated through app.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "An error occurred and device name was not changed.", Toast.LENGTH_SHORT).show();
+        }
+
 
         // Getting and filling the device OS version field for display info.
         TextView osVersionField = findViewById(R.id.os_version_field);
