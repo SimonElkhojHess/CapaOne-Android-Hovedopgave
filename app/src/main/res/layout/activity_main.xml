@@ -8,7 +8,8 @@
     android:background="@color/light_slate"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    >
 
     <LinearLayout
         android:id="@+id/top_bar"
@@ -19,14 +20,16 @@
         android:outlineProvider="bounds"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/androidlogo"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toStartOf="@+id/app_name" />
+            app:layout_constraintEnd_toStartOf="@+id/app_name"
+            />
 
         <TextView
             android:id="@+id/app_name"
@@ -39,7 +42,8 @@
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
     </LinearLayout>
 
@@ -50,41 +54,69 @@
         android:background="@drawable/customborder"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
-        > </LinearLayout>
+        >
+    </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/device_name"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:background="@drawable/topinfoborder"
-        android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar_border">
+        app:layout_constraintTop_toBottomOf="@+id/top_bar_border"
+        >
 
         <TextView
+            android:id="@+id/device_name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:text="@string/device_name_label"
             android:textColor="@color/dark_slate"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:gravity="start"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <Button
+            android:id="@+id/device_name_edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:text="Edit"
+            android:textColor="@color/dark_slate"
+            android:textSize="10sp"
+            android:backgroundTint="@color/light_sky"
+            app:layout_constraintEnd_toStartOf="@+id/device_name_field"
+            />
+
+        <EditText
+            android:id="@+id/edit_device_name_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textSize="18sp"
+            android:textColor="@color/dark_slate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/device_name_edit_button"
+            />
 
         <TextView
             android:id="@+id/device_name_field"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text=""
-            android:orientation="horizontal"
+            android:visibility="visible"
             android:textColor="@color/dark_slate"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/os_version"
@@ -97,7 +129,8 @@
         android:background="@drawable/middleinfoborder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/device_name">
+        app:layout_constraintTop_toBottomOf="@+id/device_name"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -106,7 +139,8 @@
             android:text="@string/device_osversion_label"
             android:textColor="@color/dark_slate"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
         <TextView
             android:id="@+id/os_version_field"
@@ -116,7 +150,8 @@
             android:orientation="horizontal"
             android:text=""
             android:textColor="@color/dark_slate"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -130,7 +165,8 @@
         android:background="@drawable/bottominfoborder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/os_version">
+        app:layout_constraintTop_toBottomOf="@+id/os_version"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -139,7 +175,8 @@
             android:text="@string/device_model_label"
             android:textColor="@color/dark_slate"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
         <TextView
             android:id="@+id/device_model_field"
@@ -149,7 +186,8 @@
             android:orientation="horizontal"
             android:text=""
             android:textColor="@color/dark_slate"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -157,6 +195,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="20dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
