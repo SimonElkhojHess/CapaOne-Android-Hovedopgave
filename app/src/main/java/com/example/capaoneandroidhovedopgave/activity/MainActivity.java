@@ -1,25 +1,17 @@
 package com.example.capaoneandroidhovedopgave.activity;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,54 +21,41 @@ import com.example.capaoneandroidhovedopgave.model.DeviceInfo;
 
 public class MainActivity extends AppCompatActivity {
 
-    ConstraintLayout constraintLayout;
-    ConstraintLayout constraintLayoutOriginal;
-    ConstraintSet constraintSet;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        constraintLayout = findViewById(R.id.device_name);
-        constraintLayoutOriginal = findViewById(R.id.device_name);
-        constraintSet = new ConstraintSet();
 
 
-        constraintSet.clone(constraintLayout);
 
         DeviceInfo currentDevice = new DeviceInfo(this);
 
         // Inserting the device name into the TextView
         TextView deviceNameField = findViewById(R.id.device_name_field);
-        String deviceName = currentDevice.getDeviceName();
-        deviceNameField.setText(deviceName);
+        deviceNameField.setText(currentDevice.getDeviceName());
         EditText editDeviceNameField = findViewById(R.id.edit_device_name_field);
-        TextView deviceNameLabel = findViewById(R.id.device_name_label);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 
 
         Button deviceNameEditButton = findViewById(R.id.device_name_edit_button);
+        Button approveNewDeviceName = findViewById(R.id.approve_new_device_name);
         deviceNameEditButton.setOnClickListener(v -> {
-            /*deviceNameField.setHeight(0);
-            deviceNameField.setWidth(0);
-            editDeviceNameField.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));*/
-            constraintSet.setVisibility(deviceNameField.getId(), View.GONE);
-            constraintSet.setVisibility(editDeviceNameField.getId(), View.VISIBLE);
-            constraintSet.connect(editDeviceNameField.getId(), ConstraintSet.END, deviceNameEditButton.getId(), ConstraintSet.START);
-            constraintSet.connect(deviceNameEditButton.getId(), ConstraintSet.START, deviceNameLabel.getId(), ConstraintSet.END);
-            constraintSet.applyTo(constraintLayout);
+            deviceNameField.setVisibility(View.GONE);
+            deviceNameEditButton.setVisibility(View.GONE);
+            editDeviceNameField.setVisibility(View.VISIBLE);
+            approveNewDeviceName.setVisibility(View.VISIBLE);
             editDeviceNameField.requestFocus();
             imm.showSoftInput(editDeviceNameField, InputMethodManager.SHOW_FORCED);
         });
 
         editDeviceNameField.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                constraintSet.setVisibility(editDeviceNameField.getId(), View.GONE);
-                constraintSet.setVisibility(deviceNameField.getId(), View.VISIBLE);
-                constraintSet.connect(deviceNameEditButton.getId(), ConstraintSet.END, deviceNameField.getId(), ConstraintSet.START);
-                constraintSet.applyTo(constraintLayout);
+                editDeviceNameField.setVisibility(View.GONE);
+                approveNewDeviceName.setVisibility(View.GONE);
+                deviceNameField.setVisibility(View.VISIBLE);
+                deviceNameEditButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -112,10 +91,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
+            View b = findViewById(R.id.approve_new_device_name);
             if (v instanceof EditText) {
-                Rect outRect = new Rect();
-                v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                Rect outRectText = new Rect();
+                Rect outRectButton = new Rect();
+                b.getGlobalVisibleRect(outRectButton);
+                v.getGlobalVisibleRect(outRectText);
+                if (!outRectText.contains((int) event.getRawX(), (int) event.getRawY()) && !outRectButton.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
