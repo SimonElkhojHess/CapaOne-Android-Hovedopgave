@@ -10,10 +10,12 @@ public class DeviceInfo {
     private String osVersion;
     private String deviceModel;
 
+    // Constructor
     public DeviceInfo(Context context) {
         this.context = context;
     }
 
+    // Getters
     public String getDeviceName() {
         if (deviceName == null) {
             deviceName = retrieveDeviceName();
@@ -29,6 +31,25 @@ public class DeviceInfo {
     public String getDeviceModel() {
         deviceModel = Build.MODEL;
         return deviceModel;
+    }
+
+    // Setter
+    public boolean setDeviceName(String newName) {
+        return setDeviceNameInSystem(newName);
+    }
+
+    private boolean setDeviceNameInSystem(String newNameInSystem) {
+        boolean wasNameChangedInSystem = false;
+
+        try {
+            wasNameChangedInSystem = Settings.Global.putString(context.getContentResolver(), "device_name", newNameInSystem);
+        } catch(SecurityException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return wasNameChangedInSystem;
     }
     private String retrieveDeviceName() {
         String name = null;
