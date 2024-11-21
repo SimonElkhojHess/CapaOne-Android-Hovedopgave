@@ -87,14 +87,14 @@
             android:id="@+id/device_name_edit_button"
             android:layout_width="37dp"
             android:layout_height="37dp"
+            android:layout_marginEnd="4dp"
+            android:backgroundTint="@color/light_sky"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
-            android:text="Edit"
+            android:text="@string/edit_device_name_button_text"
             android:textColor="@color/dark_slate"
             android:textSize="10sp"
-            android:backgroundTint="@color/light_sky"
             android:visibility="visible"
-            android:gravity="center_vertical"
             app:layout_constraintEnd_toStartOf="@id/device_name_field"
             />
 
@@ -104,7 +104,7 @@
             android:layout_height="37dp"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
-            android:text="Approve"
+            android:text="@string/approve_new_device_name_button_text"
             android:backgroundTint="@color/android_green"
             android:textSize="10sp"
             android:textColor="@color/dark_slate"
@@ -121,6 +121,9 @@
             android:textSize="18sp"
             android:textColor="@color/dark_slate"
             android:gravity="center_vertical"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            android:lines="1"
             app:layout_constraintStart_toEndOf="@id/approve_new_device_name"
             app:layout_constraintEnd_toEndOf="parent"
             />
@@ -129,10 +132,10 @@
             android:id="@+id/device_name_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="MyTestDevice"
             android:visibility="visible"
             android:textColor="@color/dark_slate"
             android:textSize="18sp"
-            android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>

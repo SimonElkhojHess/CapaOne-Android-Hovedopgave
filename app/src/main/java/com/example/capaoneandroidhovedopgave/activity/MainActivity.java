@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button deviceNameEditButton = findViewById(R.id.device_name_edit_button);
         Button approveNewDeviceName = findViewById(R.id.approve_new_device_name);
+
         deviceNameEditButton.setOnClickListener(v -> {
             deviceNameField.setVisibility(View.GONE);
             deviceNameEditButton.setVisibility(View.GONE);
@@ -48,6 +50,24 @@ public class MainActivity extends AppCompatActivity {
             approveNewDeviceName.setVisibility(View.VISIBLE);
             editDeviceNameField.requestFocus();
             imm.showSoftInput(editDeviceNameField, InputMethodManager.SHOW_FORCED);
+        });
+
+        approveNewDeviceName.setOnClickListener(v -> {
+            String newDeviceName = editDeviceNameField.getText().toString();
+            editDeviceNameField.setVisibility(View.GONE);
+            approveNewDeviceName.setVisibility(View.GONE);
+            deviceNameField.setVisibility(View.VISIBLE);
+            deviceNameEditButton.setVisibility(View.VISIBLE);
+
+            boolean successfulNameChange = currentDevice.setDeviceName(newDeviceName);
+            if (successfulNameChange) {
+                Toast.makeText(this, "Device name updated through app.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "An error occurred and device name was not changed.", Toast.LENGTH_SHORT).show();
+            }
+            if (successfulNameChange) {
+                deviceNameField.setText(currentDevice.getDeviceName());
+            }
         });
 
         editDeviceNameField.setOnFocusChangeListener((v, hasFocus) -> {
@@ -87,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Method for closing the edit device name EditText, if clicking on anything other than the "Approve" button or the EditText field itself.
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
