@@ -1,6 +1,8 @@
 package com.example.capaoneandroidhovedopgave.activity;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -12,22 +14,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.capaoneandroidhovedopgave.R;
 import com.example.capaoneandroidhovedopgave.model.DeviceInfo;
+import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
+import com.example.capaoneandroidhovedopgave.service.LocationService;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private LocationService locationService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
 
 
         DeviceInfo currentDevice = new DeviceInfo(this);
@@ -39,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 
-
+        // Getting buttons for the name change and setting listeners to give functionality to the buttons
         Button deviceNameEditButton = findViewById(R.id.device_name_edit_button);
         Button approveNewDeviceName = findViewById(R.id.approve_new_device_name);
 
@@ -80,16 +90,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-        /*boolean successfulNameChange = currentDevice.setDeviceName("new Device Name");
-        if (successfulNameChange) {
-            Toast.makeText(this, "Device name updated through app.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "An error occurred and device name was not changed.", Toast.LENGTH_SHORT).show();
-        }*/
-
-
         // Getting and filling the device OS version field for display info.
         TextView osVersionField = findViewById(R.id.os_version_field);
         String osVersion = currentDevice.getOsVersion();
@@ -99,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
         TextView deviceModelField = findViewById(R.id.device_model_field);
         String deviceModel = currentDevice.getDeviceModel();
         deviceModelField.setText(deviceModel);
+
+        // Location
+        locationService = new LocationService(this);
+        checkLocationPermission();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -127,4 +131,53 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(event);
     }
+
+    // Checking if location permission is granted then fetch it, and if not request it.
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            fetchDeviceLocation();
+        }
+    }
+
+    private void fetchDeviceLocation() {
+        locationService.getDeviceLocation(new LocationService.LocationCallback() {
+            @Override
+            public void onLocationResult(DeviceLocation deviceLocation) {
+                updateUIWithLocation(deviceLocation);
+            }
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(MainActivity.this, "Error fetching location: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            fetchDeviceLocation();
+        } else {
+            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateUIWithLocation(DeviceLocation deviceLocation) {
+        TextView deviceLocationField = findViewById(R.id.device_location_field);
+        String street = deviceLocation.getStreet();
+        String streetNumber = deviceLocation.getStreetNumber();
+        String city = deviceLocation.getCity();
+        String region = deviceLocation.getRegion();
+        String country = deviceLocation.getCountry();
+        double longitude = deviceLocation.getLongitude();
+        double latitude = deviceLocation.getLatitude();
+
+        String deviceLocationStringForField = street + " " + streetNumber + " " + city + ", " + region + " " + country + "\n" + latitude + ", " + longitude;
+
+        deviceLocationField.setText(deviceLocationStringForField);
+    }
+
 }
