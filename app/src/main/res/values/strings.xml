@@ -3,4 +3,7 @@
     <string name="device_name_label">Device name: </string>
     <string name="device_osversion_label">OS version: </string>
     <string name="device_model_label">Model: </string>
+    <string name="edit_device_name_button_text">Edit</string>
+    <string name="approve_new_device_name_button_text">Approve</string>
+    <string name="device_location_label_text">Device location: </string>
 </resources>
