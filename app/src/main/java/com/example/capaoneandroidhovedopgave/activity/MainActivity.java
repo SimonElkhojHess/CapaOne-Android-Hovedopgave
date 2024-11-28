@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Bundle;
+import android.content.RestrictionsManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -23,14 +25,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.capaoneandroidhovedopgave.R;
+import com.example.capaoneandroidhovedopgave.model.ApiBody;
 import com.example.capaoneandroidhovedopgave.model.DeviceInfo;
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
+import com.example.capaoneandroidhovedopgave.service.DeviceInfoService;
 import com.example.capaoneandroidhovedopgave.service.LocationService;
+import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private LocationService locationService;
+    Gson gson = new Gson();
 
 
     @Override
@@ -38,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        RestrictionsManager restrictionsManager = (RestrictionsManager) getSystemService(Context.RESTRICTIONS_SERVICE);
+        Bundle appRestrictions = restrictionsManager.getApplicationRestrictions();
+        String authToken = appRestrictions.getString("auth_token", "");
 
 
         DeviceInfo currentDevice = new DeviceInfo(this);
@@ -68,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
             approveNewDeviceName.setVisibility(View.GONE);
             deviceNameField.setVisibility(View.VISIBLE);
             deviceNameEditButton.setVisibility(View.VISIBLE);
+
+            ApiBody body = new ApiBody("capaoneDeviceName", newDeviceName);
+            String jsonBody = gson.toJson(body);
+            DeviceInfoService.sendNewNameToDatabase(jsonBody, authToken);
 
             boolean successfulNameChange = currentDevice.setDeviceName(newDeviceName);
             if (successfulNameChange) {
@@ -179,5 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
         deviceLocationField.setText(deviceLocationStringForField);
     }
+
+
 
 }
