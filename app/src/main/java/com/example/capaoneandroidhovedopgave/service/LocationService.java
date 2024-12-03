@@ -1,18 +1,26 @@
 package com.example.capaoneandroidhovedopgave.service;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,50 +38,111 @@ public class LocationService {
         geocoder = new Geocoder(context, Locale.getDefault());
     }
 
-    public interface LocationCallback {
+    public boolean isLocationPermissionGranted() {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestLocationPermission(Activity activity, int requestCode) {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
+    }
+
+    public void fetchLocation(Activity activity, int requestCode, DeviceLocationCallback callback) {
+        if(!isLocationPermissionGranted()) {
+            requestLocationPermission(activity, requestCode);
+            callback.onFailure(new SecurityException("Location permission not granted"));
+            return;
+        }
+        getDeviceLocation(callback);
+        startLocationUpdates(callback);
+    }
+
+
+    public interface DeviceLocationCallback {
         void onLocationResult(DeviceLocation deviceLocation);
         void onFailure(Exception e);
     }
 
-    public void getDeviceLocation(LocationCallback callback) {
+    public void getDeviceLocation(DeviceLocationCallback callback) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             callback.onFailure(new SecurityException("Location permission not granted"));
             return;
         }
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-            if (location != null) {
-                new Thread(() -> {
-                    try {
-                        List<Address> addresses = geocoder.getFromLocation( location.getLatitude(), location.getLongitude(), 1);
-                        if (addresses != null && !addresses.isEmpty()) {
-                            Address address = addresses.get(0);
-                            DeviceLocation deviceLocation = new DeviceLocation(
-                                    address.getCountryName(),
-                                    address.getAdminArea(),
-                                    address.getLocality(),
-                                    address.getThoroughfare(),
-                                    address.getSubThoroughfare(),
-                                    location.getLatitude(),
-                                    location.getLongitude()
-                            );
-                            new Handler(Looper.getMainLooper()).post(() ->
-                                    callback.onLocationResult(deviceLocation)
-                            );
-                        } else {
-                            new Handler(Looper.getMainLooper()).post(() ->
-                                    callback.onFailure(new Exception("No address found"))
-                            );
-                        }
-                    } catch (IOException e) {
-                        new Handler(Looper.getMainLooper()).post(() ->
-                                callback.onFailure(e)
-                        );
-                    }
-                }).start();
-            } else {
-                callback.onFailure(new Exception("Unable to obtain location"));
-            }
+            processLocation(location, callback);
         }).addOnFailureListener(callback::onFailure);
     }
+
+    private void processLocation(Location location, DeviceLocationCallback callback) {
+        if (location == null) {
+            callback.onFailure(new Exception("Location is null"));
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                List<Address> addresses = geocoder.getFromLocation( location.getLatitude(), location.getLongitude(), 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    DeviceLocation deviceLocation = new DeviceLocation(
+                            address.getCountryName(),
+                            address.getAdminArea(),
+                            address.getLocality(),
+                            address.getThoroughfare(),
+                            address.getSubThoroughfare(),
+                            location.getLatitude(),
+                            location.getLongitude()
+                    );
+                    new Handler(Looper.getMainLooper()).post(() ->
+                            callback.onLocationResult(deviceLocation)
+                    );
+                } else {
+                    new Handler(Looper.getMainLooper()).post(() ->
+                            callback.onFailure(new Exception("No address found"))
+                    );
+                }
+            } catch (IOException e) {
+                new Handler(Looper.getMainLooper()).post(() ->
+                        callback.onFailure(e)
+                );
+            }
+        }).start();
+
+    }
+
+    private LocationRequest createLocationRequest() {
+        LocationRequest.Builder locationRequest = new LocationRequest.Builder(3600000);
+        locationRequest.setDurationMillis(Long.MAX_VALUE);
+        locationRequest.setIntervalMillis(3600000);
+        locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setMinUpdateIntervalMillis(3599999);
+        locationRequest.setMaxUpdateAgeMillis(4200000);
+        return locationRequest.build();
+    }
+
+    private LocationCallback createLocationCallback(DeviceLocationCallback callback) {
+        return new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                Location latestLocation = locationResult.getLastLocation();
+                processLocation(latestLocation, callback);
+
+            }
+        };
+    }
+
+    private void startLocationUpdates(DeviceLocationCallback callback) {
+
+        LocationRequest locationRequest = createLocationRequest();
+
+        LocationCallback locationCallback = createLocationCallback(callback);
+
+        try {
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        } catch (SecurityException securityException) {
+            Log.d("LocationService", "Security Exception: " + securityException);
+        }
+
+    }
+
 }
