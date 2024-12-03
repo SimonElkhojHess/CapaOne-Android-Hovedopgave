@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -78,11 +79,13 @@ public class MainActivity extends AppCompatActivity {
             deviceNameField.setVisibility(View.VISIBLE);
             deviceNameEditButton.setVisibility(View.VISIBLE);
 
-            ApiBody body = new ApiBody("capaoneDeviceName", newDeviceName);
+            ApiBody body = new ApiBody(newDeviceName);
             String jsonBody = gson.toJson(body);
+            System.out.println(jsonBody);
+            Log.d("DeviceInfoService", "Request body: " + jsonBody);
             DeviceInfoService.sendNewNameToDatabase(jsonBody, authToken);
 
-            boolean successfulNameChange = currentDevice.setDeviceName(newDeviceName);
+            /*boolean successfulNameChange = currentDevice.setDeviceName(newDeviceName);
             if (successfulNameChange) {
                 Toast.makeText(this, "Device name updated through app.", Toast.LENGTH_SHORT).show();
             } else {
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (successfulNameChange) {
                 deviceNameField.setText(currentDevice.getDeviceName());
-            }
+            }*/
         });
 
         editDeviceNameField.setOnFocusChangeListener((v, hasFocus) -> {
@@ -149,9 +152,10 @@ public class MainActivity extends AppCompatActivity {
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            fetchDeviceLocation();
         }
+
+        fetchDeviceLocation();
+
     }
 
     private void fetchDeviceLocation() {
