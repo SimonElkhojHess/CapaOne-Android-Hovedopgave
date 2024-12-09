@@ -20,6 +20,8 @@ public class DeviceLocation {
         this.longitude = longitude;
     }
 
+    public DeviceLocation() {}
+
     public String getCountry() { return country; }
     public String getRegion() { return region; }
     public String getCity() { return city; }
