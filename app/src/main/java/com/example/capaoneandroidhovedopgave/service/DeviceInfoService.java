@@ -8,7 +8,7 @@ import java.io.IOException;
 import okhttp3.*;
 public class DeviceInfoService {
     public static final OkHttpClient client = new OkHttpClient();
-    public static void sendNewNameToDatabase(String jsonBody, String authToken) {
+    public static void sendBodyToDatabase(String jsonBody, String authToken) {
 
 
         Portaluser portaluserAuth = new Portaluser();
