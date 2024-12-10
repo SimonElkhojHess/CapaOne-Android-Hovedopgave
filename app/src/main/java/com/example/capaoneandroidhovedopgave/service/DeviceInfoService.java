@@ -6,6 +6,8 @@ import com.example.capaoneandroidhovedopgave.Portaluser;
 import java.io.IOException;
 
 import okhttp3.*;
+
+
 public class DeviceInfoService {
     public static final OkHttpClient client = new OkHttpClient();
     public static void sendBodyToDatabase(String jsonBody, String authToken) {

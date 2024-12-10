@@ -1,5 +1,7 @@
 package com.example.capaoneandroidhovedopgave.activity;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -20,14 +22,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.datastore.preferences.core.MutablePreferences;
+import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.core.PreferencesKeys;
+import androidx.datastore.preferences.rxjava2.RxPreferenceDataStoreBuilder;
+import androidx.datastore.rxjava2.RxDataStore;
 
 import com.example.capaoneandroidhovedopgave.R;
 import com.example.capaoneandroidhovedopgave.model.ApiBody;
 import com.example.capaoneandroidhovedopgave.model.DeviceInfo;
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
+import com.example.capaoneandroidhovedopgave.service.DataStoreSingleton;
 import com.example.capaoneandroidhovedopgave.service.DeviceInfoService;
 import com.example.capaoneandroidhovedopgave.service.LocationService;
 import com.google.gson.Gson;
+
+import io.reactivex.Single;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     Gson gson = new Gson();
     private String authTokenForPermission = "";
+    RxDataStore<Preferences> dataStoreRX;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +56,14 @@ public class MainActivity extends AppCompatActivity {
         Bundle appRestrictions = restrictionsManager.getApplicationRestrictions();
         String authToken = appRestrictions.getString("auth_token", "");
         authTokenForPermission = authToken;
+        DataStoreSingleton dataStoreSingleton = DataStoreSingleton.getInstance();
 
+        if (dataStoreSingleton.getDataStore() == null) {
+            dataStoreRX = new RxPreferenceDataStoreBuilder(this, "device_info_datastore").build();
+        } else {
+            dataStoreRX = dataStoreSingleton.getDataStore();
+        }
+        dataStoreSingleton.setDataStore(dataStoreRX);
 
 
         DeviceInfo currentDevice = new DeviceInfo(this);
@@ -187,4 +205,19 @@ public class MainActivity extends AppCompatActivity {
 
         deviceLocationField.setText(deviceLocationStringForField);
     }
+
+    public boolean putStringValue(String Key, String value){
+        boolean returnValue;
+        Preferences.Key<String> PREF_KEY = PreferencesKeys.stringKey(Key);
+        Single<Preferences> updateResult = dataStoreRX.updateDataAsync(prefsIn -> {
+            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+            mutablePreferences.set(PREF_KEY, value);
+            return Single.just(mutablePreferences);
+        }).onErrorReturnItem(Preferences.empty).subscribe(
+                System.out::println,
+                error -> System.err.println("onError should not be printed!"));
+        returnValue = updateResult.blockingGet() != "error";
+        return returnValue;
+    }
+
 }

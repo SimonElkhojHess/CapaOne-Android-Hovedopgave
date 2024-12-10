@@ -10,6 +10,10 @@ constraintlayout = "2.2.0"
 playServicesLocation = "21.3.0"
 okhttp = "5.0.0-alpha.14"
 gson = "2.11.0"
+datastorePreferences = "1.1.1"
+datastoreRxjava2 = "placeholder"
+datastoreRxjava2Version = "1.1.1"
+datastorePreferencesRxjava2 = "1.1.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,6 +26,9 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+datastore-rxjava2 = { group = "androidx.datastore", name = "datastore-rxjava2", version.ref = "datastoreRxjava2Version" }
+datastore-preferences-rxjava2 = { group = "androidx.datastore", name = "datastore-preferences-rxjava2", version.ref = "datastorePreferencesRxjava2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
