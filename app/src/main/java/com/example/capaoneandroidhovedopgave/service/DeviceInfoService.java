@@ -1,4 +1,5 @@
 package com.example.capaoneandroidhovedopgave.service;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.capaoneandroidhovedopgave.Portaluser;

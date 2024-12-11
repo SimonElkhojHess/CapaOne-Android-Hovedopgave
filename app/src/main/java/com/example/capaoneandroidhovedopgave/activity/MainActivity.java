@@ -1,9 +1,11 @@
 package com.example.capaoneandroidhovedopgave.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         String authToken = appRestrictions.getString("auth_token", "");
         authTokenForPermission = authToken;
 
-
-
         DeviceInfo currentDevice = new DeviceInfo(this);
 
         // Inserting the device name into the TextView
@@ -83,15 +83,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("DeviceInfoService", "Request body: " + jsonBody);
             DeviceInfoService.sendBodyToDatabase(jsonBody, authToken);
 
-            /*boolean successfulNameChange = currentDevice.setDeviceName(newDeviceName);
-            if (successfulNameChange) {
-                Toast.makeText(this, "Device name updated through app.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "An error occurred and device name was not changed.", Toast.LENGTH_SHORT).show();
-            }
-            if (successfulNameChange) {
-                deviceNameField.setText(currentDevice.getDeviceName());
-            }*/
+            currentDevice.setDeviceName(newDeviceName);
+            deviceNameField.setText(currentDevice.getDeviceName());
         });
 
         editDeviceNameField.setOnFocusChangeListener((v, hasFocus) -> {
