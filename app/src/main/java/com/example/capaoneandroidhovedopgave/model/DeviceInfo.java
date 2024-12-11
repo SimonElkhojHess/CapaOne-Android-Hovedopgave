@@ -1,6 +1,11 @@
 package com.example.capaoneandroidhovedopgave.model;
 
+
+
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -17,8 +22,11 @@ public class DeviceInfo {
 
     // Getters
     public String getDeviceName() {
-        if (deviceName == null) {
-            deviceName = retrieveDeviceName();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("DeviceInfo", Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("device_name", "Default Device Name").equals("Default Device Name")) {
+            deviceName = Settings.Global.getString(context.getContentResolver(), "device_name");
+        } else {
+            deviceName = sharedPreferences.getString("device_name", "Default Device Name");
         }
         return deviceName;
     }
@@ -34,36 +42,12 @@ public class DeviceInfo {
     }
 
     // Setter
-    public boolean setDeviceName(String newName) {
-        return setDeviceNameInSystem(newName);
-    }
-
-    private boolean setDeviceNameInSystem(String newNameInSystem) {
-        boolean wasNameChangedInSystem = false;
-
-        try {
-            wasNameChangedInSystem = Settings.Global.putString(context.getContentResolver(), "device_name", newNameInSystem);
-        } catch(SecurityException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return wasNameChangedInSystem;
-    }
-    private String retrieveDeviceName() {
-        String name = null;
-        try {
-            name = Settings.Global.getString(context.getContentResolver(), "device_name");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (name == null || name.isEmpty()) {
-            name = "Device name not found!";
-        }
-
-        return name;
-
+    public void setDeviceName(String newName) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("DeviceInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("device_name", newName);
+        editor.apply();
+        deviceName = sharedPreferences.getString("device_name", "Default Device Name");
     }
 
 }

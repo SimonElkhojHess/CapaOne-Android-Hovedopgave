@@ -1,16 +1,13 @@
 package com.example.capaoneandroidhovedopgave.service;
 
-import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.RestrictionsManager;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -18,7 +15,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.example.capaoneandroidhovedopgave.Portaluser;
 import com.example.capaoneandroidhovedopgave.model.ApiLocationBody;
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,9 +29,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 
 public class LocationService {
 
