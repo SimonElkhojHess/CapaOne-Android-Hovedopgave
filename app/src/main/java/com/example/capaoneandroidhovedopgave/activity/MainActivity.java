@@ -50,6 +50,25 @@ public class MainActivity extends AppCompatActivity {
 
         DeviceInfo currentDevice = new DeviceInfo(this);
 
+        DeviceInfoService.getDeviceNameFromDatabase(authToken, new DeviceInfoService.DeviceNameCallback() {
+            @Override
+            public void onDeviceNameFetched(String deviceNameFromDatabase) {
+                runOnUiThread(() -> {
+                    if (deviceNameFromDatabase.isEmpty()) {
+                        String deviceNameOnDevice = currentDevice.getDeviceName();
+                        prepareDeviceNameForBody(deviceNameOnDevice, authToken);
+                    } else {
+                        currentDevice.setDeviceName(deviceNameFromDatabase);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         // Inserting the device name into the TextView
         TextView deviceNameField = findViewById(R.id.device_name_field);
         deviceNameField.setText(currentDevice.getDeviceName());
@@ -77,11 +96,7 @@ public class MainActivity extends AppCompatActivity {
             deviceNameField.setVisibility(View.VISIBLE);
             deviceNameEditButton.setVisibility(View.VISIBLE);
 
-            ApiBody body = new ApiBody(newDeviceName);
-            String jsonBody = gson.toJson(body);
-            System.out.println(jsonBody);
-            Log.d("DeviceInfoService", "Request body: " + jsonBody);
-            DeviceInfoService.sendBodyToDatabase(jsonBody, authToken);
+            prepareDeviceNameForBody(newDeviceName, authToken);
 
             currentDevice.setDeviceName(newDeviceName);
             deviceNameField.setText(currentDevice.getDeviceName());
@@ -180,4 +195,13 @@ public class MainActivity extends AppCompatActivity {
 
         deviceLocationField.setText(deviceLocationStringForField);
     }
+
+    private void prepareDeviceNameForBody(String newDeviceName, String authToken) {
+        ApiBody body = new ApiBody(newDeviceName);
+        String jsonBody = gson.toJson(body);
+        System.out.println(jsonBody);
+        Log.d("DeviceInfoService", "Request body: " + jsonBody);
+        DeviceInfoService.sendBodyToDatabase(jsonBody, authToken);
+    }
+
 }
