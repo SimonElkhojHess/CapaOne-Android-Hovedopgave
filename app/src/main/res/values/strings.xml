@@ -7,4 +7,7 @@
     <string name="approve_new_device_name_button_text">Approve</string>
     <string name="device_location_label_text">Device location: </string>
     <string name="autherization_token_title">Autherization Token</string>
+    <string name="organization_id">Organization ID</string>
+    <string name="enterprise_id">Enterprise ID</string>
+    <string name="device_id">Device ID</string>
 </resources>
