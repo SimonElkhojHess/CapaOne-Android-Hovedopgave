@@ -27,6 +27,7 @@ import com.example.capaoneandroidhovedopgave.R;
 import com.example.capaoneandroidhovedopgave.model.ApiBody;
 import com.example.capaoneandroidhovedopgave.model.DeviceInfo;
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
+import com.example.capaoneandroidhovedopgave.model.DeviceRestrictions;
 import com.example.capaoneandroidhovedopgave.service.DeviceInfoService;
 import com.example.capaoneandroidhovedopgave.service.LocationService;
 import com.google.gson.Gson;
@@ -46,17 +47,22 @@ public class MainActivity extends AppCompatActivity {
         RestrictionsManager restrictionsManager = (RestrictionsManager) getSystemService(Context.RESTRICTIONS_SERVICE);
         Bundle appRestrictions = restrictionsManager.getApplicationRestrictions();
         String authToken = appRestrictions.getString("auth_token", "");
+        String orgId = appRestrictions.getString("org_id", "");
+        String enterpriseId = appRestrictions.getString("enterprise_id", "");
+        String deviceId = appRestrictions.getString("device_id", "");
         authTokenForPermission = authToken;
+        DeviceRestrictions deviceRestrictions = new DeviceRestrictions(authToken, orgId, enterpriseId, deviceId);
+        DeviceInfoService.setDeviceRestrictionsForApi(deviceRestrictions);
 
         DeviceInfo currentDevice = new DeviceInfo(this);
 
-        DeviceInfoService.getDeviceNameFromDatabase(authToken, new DeviceInfoService.DeviceNameCallback() {
+        DeviceInfoService.getDeviceNameFromDatabase(new DeviceInfoService.DeviceNameCallback() {
             @Override
             public void onDeviceNameFetched(String deviceNameFromDatabase) {
                 runOnUiThread(() -> {
                     if (deviceNameFromDatabase.isEmpty()) {
                         String deviceNameOnDevice = currentDevice.getDeviceName();
-                        prepareDeviceNameForBody(deviceNameOnDevice, authToken);
+                        prepareDeviceNameForBody(deviceNameOnDevice);
                     } else {
                         currentDevice.setDeviceName(deviceNameFromDatabase);
                     }
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             deviceNameField.setVisibility(View.VISIBLE);
             deviceNameEditButton.setVisibility(View.VISIBLE);
 
-            prepareDeviceNameForBody(newDeviceName, authToken);
+            prepareDeviceNameForBody(newDeviceName);
 
             currentDevice.setDeviceName(newDeviceName);
             deviceNameField.setText(currentDevice.getDeviceName());
@@ -196,12 +202,12 @@ public class MainActivity extends AppCompatActivity {
         deviceLocationField.setText(deviceLocationStringForField);
     }
 
-    private void prepareDeviceNameForBody(String newDeviceName, String authToken) {
+    private void prepareDeviceNameForBody(String newDeviceName) {
         ApiBody body = new ApiBody(newDeviceName);
         String jsonBody = gson.toJson(body);
         System.out.println(jsonBody);
         Log.d("DeviceInfoService", "Request body: " + jsonBody);
-        DeviceInfoService.sendBodyToDatabase(jsonBody, authToken);
+        DeviceInfoService.sendBodyToDatabase(jsonBody);
     }
 
 }

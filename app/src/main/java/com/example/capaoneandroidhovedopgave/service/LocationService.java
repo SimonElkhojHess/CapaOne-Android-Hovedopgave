@@ -101,7 +101,7 @@ public class LocationService {
                             location.getLatitude(),
                             location.getLongitude()
                     );
-                    sendDeviceLocationToDatabase(deviceLocation, authToken);
+                    sendDeviceLocationToDatabase(deviceLocation);
                     new Handler(Looper.getMainLooper()).post(() ->
                             callback.onLocationResult(deviceLocation)
                     );
@@ -154,13 +154,13 @@ public class LocationService {
 
     }
 
-    private void sendDeviceLocationToDatabase(DeviceLocation deviceLocation, String authToken) {
+    private void sendDeviceLocationToDatabase(DeviceLocation deviceLocation) {
         String deviceLocationString = deviceLocation.getStreet() + " " + deviceLocation.getStreetNumber() + " " + deviceLocation.getCity() + ", " + deviceLocation.getRegion() + " " + deviceLocation.getCountry() + "\n" + deviceLocation.getLatitude() + ", " + deviceLocation.getLongitude();
 
         ApiLocationBody apiBody = new ApiLocationBody(deviceLocationString);
         String jsonBody = gson.toJson(apiBody);
         Log.d("Device Location update", "Request body: " + jsonBody);
-        DeviceInfoService.sendBodyToDatabase(jsonBody, authToken);
+        DeviceInfoService.sendBodyToDatabase(jsonBody);
     }
 
 }

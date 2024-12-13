@@ -47,7 +47,7 @@ public class DeviceInfo {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("device_name", newName);
         editor.apply();
-        deviceName = sharedPreferences.getString("device_name", "Default Device Name");
+        this.deviceName = sharedPreferences.getString("device_name", "Default Device Name");
     }
 
 }

@@ -3,6 +3,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.capaoneandroidhovedopgave.Portaluser;
+import com.example.capaoneandroidhovedopgave.model.DeviceRestrictions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,16 +20,23 @@ public class DeviceInfoService {
         void onDeviceNameFetched(String deviceName);
         void onError(Exception e);
     }
-    public static void sendBodyToDatabase(String jsonBody, String authToken) {
 
+    static DeviceRestrictions deviceRestrictions = new DeviceRestrictions();
 
-        Portaluser portaluserAuth = new Portaluser();
-        String portaluserAuthToken = portaluserAuth.getPortaluserToken();
+    public static void setDeviceRestrictionsForApi(DeviceRestrictions deviceRestrictionsForApi) {
+        deviceRestrictions.setAuthToken(deviceRestrictionsForApi.getAuthToken());
+        deviceRestrictions.setOrgId(deviceRestrictionsForApi.getOrgId());
+        deviceRestrictions.setEnterpriseId(deviceRestrictionsForApi.getEnterpriseId());
+        deviceRestrictions.setDeviceId(deviceRestrictionsForApi.getDeviceId());
+    }
+
+    public static void sendBodyToDatabase(String jsonBody) {
+
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
         RequestBody body = RequestBody.create(jsonBody, JSON);
 
-        Request request = new Request.Builder().url("http://10.0.2.2:3300/api/organizations/1/android/enterprise/LC03g1yf5o/device/64365c56558de5ce65d85a82").header("X-Portaluser", portaluserAuthToken).put(body).build();
+        Request request = new Request.Builder().url("http://10.0.2.2:3300/api/organizations/" + deviceRestrictions.getOrgId() + "/android/enterprise/" + deviceRestrictions.getEnterpriseId() + "/device/" + deviceRestrictions.getDeviceId()).header("X-Portaluser", deviceRestrictions.getAuthToken()).put(body).build();
 
         client.newCall(request).enqueue(new Callback() {
            @Override
@@ -49,11 +57,9 @@ public class DeviceInfoService {
         });
     }
 
-    public static void getDeviceNameFromDatabase(String authToken, DeviceNameCallback callback) {
-        Portaluser portaluserAuth = new Portaluser();
-        String portaluserAuthToken = portaluserAuth.getPortaluserToken();
+    public static void getDeviceNameFromDatabase(DeviceNameCallback callback) {
 
-        Request request = new Request.Builder().url("http://10.0.2.2:3300/api/organizations/1/android/enterprise/LC03g1yf5o/device/64365c56558de5ce65d85a82").header("X-Portaluser", portaluserAuthToken).get().build();
+        Request request = new Request.Builder().url("http://10.0.2.2:3300/api/organizations/" + deviceRestrictions.getOrgId() + "/android/enterprise/" + deviceRestrictions.getEnterpriseId() + "/device/" + deviceRestrictions.getDeviceId()).header("X-Portaluser", deviceRestrictions.getAuthToken()).get().build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
