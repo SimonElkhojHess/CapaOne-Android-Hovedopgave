@@ -1,9 +1,11 @@
 package com.example.capaoneandroidhovedopgave.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.example.capaoneandroidhovedopgave.R;
 import com.example.capaoneandroidhovedopgave.model.ApiBody;
 import com.example.capaoneandroidhovedopgave.model.DeviceInfo;
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
+import com.example.capaoneandroidhovedopgave.model.DeviceRestrictions;
 import com.example.capaoneandroidhovedopgave.service.DeviceInfoService;
 import com.example.capaoneandroidhovedopgave.service.LocationService;
 import com.google.gson.Gson;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private LocationService locationService;
     Gson gson = new Gson();
+    private String authTokenForPermission = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +47,33 @@ public class MainActivity extends AppCompatActivity {
         RestrictionsManager restrictionsManager = (RestrictionsManager) getSystemService(Context.RESTRICTIONS_SERVICE);
         Bundle appRestrictions = restrictionsManager.getApplicationRestrictions();
         String authToken = appRestrictions.getString("auth_token", "");
-
-
+        String orgId = appRestrictions.getString("org_id", "");
+        String enterpriseId = appRestrictions.getString("enterprise_id", "");
+        String deviceId = appRestrictions.getString("device_id", "");
+        authTokenForPermission = authToken;
+        DeviceRestrictions deviceRestrictions = new DeviceRestrictions(authToken, orgId, enterpriseId, deviceId);
+        DeviceInfoService.setDeviceRestrictionsForApi(deviceRestrictions);
 
         DeviceInfo currentDevice = new DeviceInfo(this);
+
+        DeviceInfoService.getDeviceNameFromDatabase(new DeviceInfoService.DeviceNameCallback() {
+            @Override
+            public void onDeviceNameFetched(String deviceNameFromDatabase) {
+                runOnUiThread(() -> {
+                    if (deviceNameFromDatabase.isEmpty()) {
+                        String deviceNameOnDevice = currentDevice.getDeviceName();
+                        prepareDeviceNameForBody(deviceNameOnDevice);
+                    } else {
+                        currentDevice.setDeviceName(deviceNameFromDatabase);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         // Inserting the device name into the TextView
         TextView deviceNameField = findViewById(R.id.device_name_field);
@@ -75,21 +102,10 @@ public class MainActivity extends AppCompatActivity {
             deviceNameField.setVisibility(View.VISIBLE);
             deviceNameEditButton.setVisibility(View.VISIBLE);
 
-            ApiBody body = new ApiBody(newDeviceName);
-            String jsonBody = gson.toJson(body);
-            System.out.println(jsonBody);
-            Log.d("DeviceInfoService", "Request body: " + jsonBody);
-            DeviceInfoService.sendNewNameToDatabase(jsonBody, authToken);
+            prepareDeviceNameForBody(newDeviceName);
 
-            /*boolean successfulNameChange = currentDevice.setDeviceName(newDeviceName);
-            if (successfulNameChange) {
-                Toast.makeText(this, "Device name updated through app.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "An error occurred and device name was not changed.", Toast.LENGTH_SHORT).show();
-            }
-            if (successfulNameChange) {
-                deviceNameField.setText(currentDevice.getDeviceName());
-            }*/
+            currentDevice.setDeviceName(newDeviceName);
+            deviceNameField.setText(currentDevice.getDeviceName());
         });
 
         editDeviceNameField.setOnFocusChangeListener((v, hasFocus) -> {
@@ -114,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Location
         locationService = new LocationService(this);
-        checkAndFetchLocation();
+        checkAndFetchLocation(authToken);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -145,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Checking if location permission is granted then fetch it, and if not request it.
-    private void checkAndFetchLocation() {
-        locationService.fetchLocation(this, LOCATION_PERMISSION_REQUEST_CODE, new LocationService.DeviceLocationCallback() {
+    private void checkAndFetchLocation(String authToken) {
+        locationService.fetchLocation(this, authToken, LOCATION_PERMISSION_REQUEST_CODE, new LocationService.DeviceLocationCallback() {
             @Override
             public void onLocationResult(DeviceLocation deviceLocation) {
                 updateUIWithLocation(deviceLocation);
@@ -165,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            checkAndFetchLocation();
+            checkAndFetchLocation(authTokenForPermission);
         } else {
             Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
         }
@@ -185,4 +201,13 @@ public class MainActivity extends AppCompatActivity {
 
         deviceLocationField.setText(deviceLocationStringForField);
     }
+
+    private void prepareDeviceNameForBody(String newDeviceName) {
+        ApiBody body = new ApiBody(newDeviceName);
+        String jsonBody = gson.toJson(body);
+        System.out.println(jsonBody);
+        Log.d("DeviceInfoService", "Request body: " + jsonBody);
+        DeviceInfoService.sendBodyToDatabase(jsonBody);
+    }
+
 }

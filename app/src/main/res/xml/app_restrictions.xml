@@ -6,4 +6,22 @@
         android:restrictionType="string"
         android:defaultValue=""
         />
+    <restriction
+        android:key="org_id"
+        android:title="@string/organization_id"
+        android:restrictionType="string"
+        android:defaultValue=""
+        />
+    <restriction
+        android:key="enterprise_id"
+        android:title="@string/enterprise_id"
+        android:restrictionType="string"
+        android:defaultValue=""
+        />
+    <restriction
+        android:key="device_id"
+        android:title="@string/device_id"
+        android:restrictionType="string"
+        android:defaultValue=""
+        />
 </restrictions>

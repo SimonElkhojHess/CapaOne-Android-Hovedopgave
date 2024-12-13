@@ -1,5 +1,6 @@
 package com.example.capaoneandroidhovedopgave.service;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.example.capaoneandroidhovedopgave.model.ApiLocationBody;
 import com.example.capaoneandroidhovedopgave.model.DeviceLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -21,16 +23,21 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
 
 public class LocationService {
 
     private Context context;
     private FusedLocationProviderClient fusedLocationClient;
     private Geocoder geocoder;
+    Gson gson = new Gson();
+
+    String authToken = "";
 
     public LocationService(Context context) {
         this.context = context.getApplicationContext();
@@ -46,12 +53,13 @@ public class LocationService {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
     }
 
-    public void fetchLocation(Activity activity, int requestCode, DeviceLocationCallback callback) {
+    public void fetchLocation(Activity activity, String authTokenForApi, int requestCode, DeviceLocationCallback callback) {
         if(!isLocationPermissionGranted()) {
             requestLocationPermission(activity, requestCode);
             callback.onFailure(new SecurityException("Location permission not granted"));
             return;
         }
+        authToken = authTokenForApi;
         getDeviceLocation(callback);
         startLocationUpdates(callback);
     }
@@ -93,6 +101,7 @@ public class LocationService {
                             location.getLatitude(),
                             location.getLongitude()
                     );
+                    sendDeviceLocationToDatabase(deviceLocation);
                     new Handler(Looper.getMainLooper()).post(() ->
                             callback.onLocationResult(deviceLocation)
                     );
@@ -143,6 +152,15 @@ public class LocationService {
             Log.d("LocationService", "Security Exception: " + securityException);
         }
 
+    }
+
+    private void sendDeviceLocationToDatabase(DeviceLocation deviceLocation) {
+        String deviceLocationString = deviceLocation.getStreet() + " " + deviceLocation.getStreetNumber() + " " + deviceLocation.getCity() + ", " + deviceLocation.getRegion() + " " + deviceLocation.getCountry() + "\n" + deviceLocation.getLatitude() + ", " + deviceLocation.getLongitude();
+
+        ApiLocationBody apiBody = new ApiLocationBody(deviceLocationString);
+        String jsonBody = gson.toJson(apiBody);
+        Log.d("Device Location update", "Request body: " + jsonBody);
+        DeviceInfoService.sendBodyToDatabase(jsonBody);
     }
 
 }
