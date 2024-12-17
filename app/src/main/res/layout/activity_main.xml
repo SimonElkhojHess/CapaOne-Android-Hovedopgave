@@ -51,25 +51,44 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar_border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/customborder"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/top_bar"
+        app:layout_constraintBottom_toTopOf="@+id/device_name"
+        >
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infoborderleft_devicename"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        android:background="@drawable/infoborderleft"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toTopOf="@id/device_name"
+        app:layout_constraintBottom_toBottomOf="@id/device_name"
+        app:layout_constraintEnd_toStartOf="@+id/device_name"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/device_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="0dp"
         android:background="@drawable/topinfoborder"
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/infoborderleft_devicename"
         app:layout_constraintTop_toBottomOf="@id/top_bar_border">
 
         <TextView
@@ -136,17 +155,32 @@
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infoborderleft_osversion"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        android:background="@drawable/infoborderleft"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toBottomOf="@id/device_name"
+        app:layout_constraintBottom_toBottomOf="@id/os_version"
+        app:layout_constraintEnd_toStartOf="@+id/os_version"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/os_version"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/middleinfoborder"
+        android:layout_marginHorizontal="0dp"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/infoborderleft_osversion"
         app:layout_constraintTop_toBottomOf="@+id/device_name">
 
         <TextView
@@ -167,19 +201,34 @@
             android:text=""
             android:textColor="@color/dark_slate"
             android:textSize="18sp" />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infoborderleft_devicemodel"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        android:background="@drawable/infoborderleft"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toTopOf="@id/device_model"
+        app:layout_constraintBottom_toBottomOf="@id/device_model"
+        app:layout_constraintEnd_toStartOf="@+id/device_model"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/device_model"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottominfoborder"
+        android:layout_marginHorizontal="5dp"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="5dp"
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/infoborderleft_devicemodel"
         app:layout_constraintTop_toBottomOf="@+id/os_version">
 
         <TextView
@@ -202,13 +251,31 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/device_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bottominfoborder"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infoborderleft_devicelocation"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        android:background="@drawable/infoborderleft"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/device_model">
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toTopOf="@id/device_location"
+        app:layout_constraintBottom_toBottomOf="@id/device_location"
+        app:layout_constraintEnd_toStartOf="@+id/device_location"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/device_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="0dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/device_model"
+        app:layout_constraintStart_toEndOf="@+id/infoborderleft_devicelocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
         <TextView
             android:id="@+id/device_location_label"
@@ -227,13 +294,23 @@
             android:textColor="@color/dark_slate"
             android:textSize="18sp" />
 
-    </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_border"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        android:layout_width="match_parent"
+        android:background="@drawable/bottominfoborder"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/device_location"
+        app:layout_constraintStart_toStartOf="@id/device_location"
+        app:layout_constraintEnd_toEndOf="@id/device_location"
+        >
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,7 @@
     <padding android:bottom="3dp"/>
     <gradient
         android:angle="270"
-        android:startColor="@color/android_green"
+        android:startColor="@color/light_sky"
         android:endColor="@color/dark_slate"
         />
 </shape>
