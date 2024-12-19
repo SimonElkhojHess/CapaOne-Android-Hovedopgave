@@ -1,9 +1,13 @@
 package com.example.capaoneandroidhovedopgave.model;
 
 public class ApiLocationBody {
-    private String deviceLocation;
+    private DeviceLocation deviceLocation;
 
-    public ApiLocationBody(String deviceLocation) {
-        this.deviceLocation = deviceLocation;
+    public ApiLocationBody(double latitude, double longitude) {
+        this.deviceLocation = new DeviceLocation(latitude, longitude);
+    }
+
+    public DeviceLocation getDeviceLocation() {
+        return deviceLocation;
     }
 }

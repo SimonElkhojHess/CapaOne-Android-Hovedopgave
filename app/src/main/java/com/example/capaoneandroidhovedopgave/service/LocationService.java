@@ -155,9 +155,7 @@ public class LocationService {
     }
 
     private void sendDeviceLocationToDatabase(DeviceLocation deviceLocation) {
-        String deviceLocationString = deviceLocation.getStreet() + " " + deviceLocation.getStreetNumber() + " " + deviceLocation.getCity() + ", " + deviceLocation.getRegion() + " " + deviceLocation.getCountry() + "\n" + deviceLocation.getLatitude() + ", " + deviceLocation.getLongitude();
-
-        ApiLocationBody apiBody = new ApiLocationBody(deviceLocationString);
+        ApiLocationBody apiBody = new ApiLocationBody(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         String jsonBody = gson.toJson(apiBody);
         Log.d("Device Location update", "Request body: " + jsonBody);
         DeviceInfoService.sendBodyToDatabase(jsonBody);

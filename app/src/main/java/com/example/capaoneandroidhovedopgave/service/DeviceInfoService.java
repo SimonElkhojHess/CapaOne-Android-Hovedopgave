@@ -1,12 +1,7 @@
 package com.example.capaoneandroidhovedopgave.service;
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.example.capaoneandroidhovedopgave.Portaluser;
 import com.example.capaoneandroidhovedopgave.model.DeviceRestrictions;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
