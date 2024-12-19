@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDeviceNameFetched(String deviceNameFromDatabase) {
                 runOnUiThread(() -> {
-                    if (deviceNameFromDatabase.isEmpty()) {
+                    if (deviceNameFromDatabase == null) {
                         String deviceNameOnDevice = currentDevice.getDeviceName();
                         prepareDeviceNameForBody(deviceNameOnDevice);
                     } else {
