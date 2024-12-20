@@ -122,10 +122,10 @@ public class LocationService {
     private LocationRequest createLocationRequest() {
         LocationRequest.Builder locationRequest = new LocationRequest.Builder(3600000);
         locationRequest.setDurationMillis(Long.MAX_VALUE);
-        locationRequest.setIntervalMillis(3600000);
+        locationRequest.setIntervalMillis(60000);
         locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setMinUpdateIntervalMillis(3599999);
-        locationRequest.setMaxUpdateAgeMillis(4200000);
+        locationRequest.setMinUpdateIntervalMillis(59000);
+        locationRequest.setMaxUpdateAgeMillis(100000);
         return locationRequest.build();
     }
 

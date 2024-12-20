@@ -31,7 +31,7 @@ public class DeviceInfoService {
 
         RequestBody body = RequestBody.create(jsonBody, JSON);
 
-        Request request = new Request.Builder().url("http://10.0.2.2:3300/api/organizations/" + deviceRestrictions.getOrgId() + "/android/enterprise/" + deviceRestrictions.getEnterpriseId() + "/device/" + deviceRestrictions.getDeviceId()).header("X-Portaluser", deviceRestrictions.getAuthToken()).put(body).build();
+        Request request = new Request.Builder().url("http://:3300/api/organizations/" + deviceRestrictions.getOrgId() + "/android/enterprise/" + deviceRestrictions.getEnterpriseId() + "/device/" + deviceRestrictions.getDeviceId()).header("X-Portaluser", deviceRestrictions.getAuthToken()).put(body).build();
 
         client.newCall(request).enqueue(new Callback() {
            @Override
